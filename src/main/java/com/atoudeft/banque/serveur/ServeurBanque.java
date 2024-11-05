@@ -6,6 +6,8 @@ import com.atoudeft.commun.net.Connexion;
 import com.atoudeft.serveur.Serveur;
 
 import java.util.ListIterator;
+import java.util.Vector;
+
 /**
  * Cette classe étend (hérite) la classe Serveur et y ajoute le nécessaire pour que le
  * serveur soit un serveur de banque.
@@ -85,5 +87,18 @@ public class ServeurBanque extends Serveur {
      */
     public void supprimeInactifs() {
         //À définir :
+        //determine l'ecart avec le tempCourant
+        //pour acceder au tempsDerniereOperation de l'objet cnx, concatener avec ConnexionBanque
+        //ajouter un array temporaire toRemove qui prend les connexions dans connectes qui douvent etre enlevees
+        Vector<Connexion> toRemove = new Vector<>();
+        for (Connexion cnx:connectes) {
+           if(((ConnexionBanque)cnx).estInactifDepuis(DELAI_INACTIVITE)){
+
+               cnx.envoyer("END");
+               cnx.close();
+               toRemove.add(cnx);
+           }
+       }
+        connectes.removeAll(toRemove);
     }
 }
