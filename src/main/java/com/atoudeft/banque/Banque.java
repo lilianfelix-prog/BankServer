@@ -1,10 +1,12 @@
 package com.atoudeft.banque;
 
+import com.atoudeft.banque.serveur.CompteCheque;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Banque implements Serializable {
     private String nom;
@@ -94,20 +96,42 @@ public class Banque implements Serializable {
      * @return true si le compte a été créé correctement
      */
     public boolean ajouter(String numCompteClient, String nip) {
-        /*À compléter et modifier :
-            - Vérifier que le numéro a entre 6 et 8 caractères et ne contient que des lettres majuscules et des chiffres.
-              Sinon, retourner false.
-            - Vérifier que le nip a entre 4 et 5 caractères et ne contient que des chiffres. Sinon,
-              retourner false.
-            - Vérifier s'il y a déjà un compte-client avec le numéro, retourner false.
-            - Sinon :
-                . Créer un compte-client avec le numéro et le nip;
-                . Générer (avec CompteBancaire.genereNouveauNumero()) un nouveau numéro de compte bancaire qui n'est
-                  pas déjà utilisé;
-                . Créer un compte-chèque avec ce numéro et l'ajouter au compte-client;
-                . Ajouter le compte-client à la liste des comptes et retourner true.
-         */
-        return this.comptes.add(new CompteClient(numCompteClient,nip)); //À modifier
+
+
+      if (numCompteClient.length() <6 && numCompteClient.length() >8  )  {
+          return false;
+      }
+      if (!numCompteClient.equals(numCompteClient.toUpperCase())) {
+          return false;
+      }
+      for (CompteClient cpt: comptes ) { // pacourir s'il existe un compte bancaire
+
+          if (cpt.getNumero().equals(numCompteClient) ) {
+
+              return false;
+
+          }
+
+      }
+      if (nip.length() < 4 && nip.length() > 5) {
+
+          return false;
+          }
+      for ( int i = 0; i< nip.length(); i++) {
+
+            if ( nip.charAt(i) <= '0' || nip.charAt(i) >= '9') {
+
+                return false;
+
+                }
+
+        }
+        CompteClient client = new CompteClient(numCompteClient, nip);
+        CompteCheque cheque = new CompteCheque(CompteBancaire.genereNouveauNumero(), TypeCompte.CHEQUE);
+
+        client.ajouter(cheque);
+        this.comptes.add(new CompteClient(numCompteClient,nip));
+        return true;
     }
 
     /**
@@ -117,7 +141,18 @@ public class Banque implements Serializable {
      * @return numéro du compte-chèque du client ayant le numéro de compte-client
      */
     public String getNumeroCompteParDefaut(String numCompteClient) {
+
+        for (CompteClient cpt: comptes ) { // pacourir s'il existe un compte bancaire
+
+            if (cpt.getNumero().equals(numCompteClient)) {
+
+               return cpt.getNumero();
+
+            }
+
+        }
+         return null;
         //À compléter : retourner le numéro du compte-chèque du compte-client.
-        return null; //À modifier
+
     }
 }

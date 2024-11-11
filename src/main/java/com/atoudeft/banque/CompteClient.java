@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompteClient implements Serializable {
+
     private String numero;
     private String nip;
     private List<CompteBancaire> comptes;
@@ -29,5 +30,9 @@ public class CompteClient implements Serializable {
      */
     public boolean ajouter(CompteBancaire compte) {
         return this.comptes.add(compte);
+    }
+
+    public String getNumero() {
+        return numero;
     }
 }
