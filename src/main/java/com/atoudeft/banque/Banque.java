@@ -6,7 +6,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 public class Banque implements Serializable {
     private String nom;
@@ -40,6 +40,7 @@ public class Banque implements Serializable {
      * @return  true si le compte-bancaire appartient au compte-client
      */
     public boolean appartientA(String numeroCompteBancaire, String numeroCompteClient) {
+
         throw new NotImplementedException();
     }
 
@@ -51,7 +52,15 @@ public class Banque implements Serializable {
      * @return true si le dépot s'est effectué correctement
      */
     public boolean deposer(double montant, String numeroCompte) {
-        throw new NotImplementedException();
+        for(CompteClient cpt: comptes){
+            for(CompteBancaire cpb: cpt.getComptes()){
+                if(cpb.getNumero().equals(numeroCompte)){
+                    cpb.crediter(montant);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -62,7 +71,15 @@ public class Banque implements Serializable {
      * @return true si le retrait s'est effectué correctement
      */
     public boolean retirer(double montant, String numeroCompte) {
-        throw new NotImplementedException();
+        for(CompteClient cpt: comptes){
+            for(CompteBancaire cpb: cpt.getComptes()){
+                if(cpb.getNumero().equals(numeroCompte)){
+                    cpb.debiter(montant);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -73,7 +90,15 @@ public class Banque implements Serializable {
      * @return true si l'opération s'est déroulée correctement
      */
     public boolean transferer(double montant, String numeroCompteInitial, String numeroCompteFinal) {
-        throw new NotImplementedException();
+        for(CompteClient cpt: comptes){
+            for(CompteBancaire cpb: cpt.getComptes()){
+                if(cpb.getNumero().equals(numeroCompteInitial)){
+                    cpb.transferer(montant, numeroCompteFinal);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -85,7 +110,16 @@ public class Banque implements Serializable {
      * @return true si le paiement s'est bien effectuée
      */
     public boolean payerFacture(double montant, String numeroCompte, String numeroFacture, String description) {
-        throw new NotImplementedException();
+        for(CompteClient cpt: comptes){
+            for(CompteBancaire cpb: cpt.getComptes()){
+                if(cpb.getNumero().equals(numeroCompte)){
+                    cpb.payerFacture(numeroFacture, montant, description);
+                    cpb.debiter(montant);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -96,41 +130,41 @@ public class Banque implements Serializable {
      * @return true si le compte a été créé correctement
      */
     public boolean ajouter(String numCompteClient, String nip) {
-
-
-      if (numCompteClient.length() <6 && numCompteClient.length() >8  )  {
+        // Vérifie si le numéro de compte-client contient entre 6 et 8 caractères et seulement des lettres majuscules et des chiffres
+      if (numCompteClient.length() <6 || numCompteClient.length() >8  )  {
           return false;
       }
+
       if (!numCompteClient.equals(numCompteClient.toUpperCase())) {
           return false;
       }
+      // Vérifie s'il existe déjà un compte-client avec le même numéro
       for (CompteClient cpt: comptes ) { // pacourir s'il existe un compte bancaire
 
           if (cpt.getNumero().equals(numCompteClient) ) {
-
               return false;
-
           }
-
       }
-      if (nip.length() < 4 && nip.length() > 5) {
-
+      // Vérifie si le nip contient entre 4 et 5 caractères
+      if (nip.length() < 4 || nip.length() > 5) {
           return false;
           }
+        // Vérifie que chaque caractère du nip est un chiffre en utilisant une boucle for
       for ( int i = 0; i< nip.length(); i++) {
-
-            if ( nip.charAt(i) <= '0' || nip.charAt(i) >= '9') {
-
+          // Caractère n'est pas un chiffre
+            if ( nip.charAt(i) < '0' || nip.charAt(i) > '9') {
                 return false;
-
-                }
-
-        }
+            }
+      }
+        // Crée un nouveau CompteClient avec le numéro de compte-client et le nip fournis
         CompteClient client = new CompteClient(numCompteClient, nip);
+        // Génère un nouveau numéro de compte pour le CompteCheque et le mettre dans un compte cheque
         CompteCheque cheque = new CompteCheque(CompteBancaire.genereNouveauNumero(), TypeCompte.CHEQUE);
 
+        // Ajoute le CompteCheque au CompteClient
         client.ajouter(cheque);
-        this.comptes.add(new CompteClient(numCompteClient,nip));
+        // Ajoute le CompteClient à la liste des comptes de la banque
+        this.comptes.add(client);
         return true;
     }
 
@@ -140,19 +174,18 @@ public class Banque implements Serializable {
      * @param numCompteClient numéro de compte-client
      * @return numéro du compte-chèque du client ayant le numéro de compte-client
      */
-    public String getNumeroCompteParDefaut(String numCompteClient) {
-
-        for (CompteClient cpt: comptes ) { // pacourir s'il existe un compte bancaire
-
+    public String getNumeroCompteParDefaut(String numCompteClient, TypeCompte type) {
+        // Parcourt la liste des comptes pour trouver le compte-client correspondant
+        for (CompteClient cpt: comptes ) {
             if (cpt.getNumero().equals(numCompteClient)) {
-
-               return cpt.getNumero();
-
+                for (CompteBancaire cpb: cpt.getComptes()){
+                    if(cpb.getType().equals(type)){
+                        return cpb.getNumero();
+                    }
+                }
             }
-
         }
          return null;
-        //À compléter : retourner le numéro du compte-chèque du compte-client.
 
     }
 }

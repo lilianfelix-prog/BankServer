@@ -8,6 +8,9 @@ public class CompteClient implements Serializable {
 
     private String numero;
     private String nip;
+
+
+
     private List<CompteBancaire> comptes;
 
     /**
@@ -31,8 +34,11 @@ public class CompteClient implements Serializable {
     public boolean ajouter(CompteBancaire compte) {
         return this.comptes.add(compte);
     }
-
+    public List<CompteBancaire> getComptes() {
+        return comptes;
+    }
     public String getNumero() {
         return numero;
     }
+    public String getNip() { return nip; }
 }
