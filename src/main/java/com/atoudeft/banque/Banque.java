@@ -40,8 +40,12 @@ public class Banque implements Serializable {
      * @return  true si le compte-bancaire appartient au compte-client
      */
     public boolean appartientA(String numeroCompteBancaire, String numeroCompteClient) {
-
-        throw new NotImplementedException();
+        for (CompteBancaire cpb : getCompteClient(numeroCompteClient).getComptes()) {
+            if (cpb.getNumero().equals(numeroCompteBancaire)) {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -90,11 +94,21 @@ public class Banque implements Serializable {
      * @return true si l'opération s'est déroulée correctement
      */
     public boolean transferer(double montant, String numeroCompteInitial, String numeroCompteFinal) {
-        for(CompteClient cpt: comptes){
-            for(CompteBancaire cpb: cpt.getComptes()){
-                if(cpb.getNumero().equals(numeroCompteInitial)){
-                    cpb.transferer(montant, numeroCompteFinal);
-                    return true;
+        //verifier que le numero de compte destinataire et initial exist
+        int compteur = 0;
+        for(CompteClient cpt: comptes) {
+            if (appartientA(numeroCompteInitial, cpt.getNumero()) || appartientA(numeroCompteFinal, cpt.getNumero())) {
+                compteur += 1;
+            }
+        }
+        if(compteur == 2){
+            //si les deux exist aller chercher le compte bancaire initial et faire le transfaire
+            for(CompteClient cpt: comptes) {
+                for (CompteBancaire cpb : cpt.getComptes()) {
+                    if (cpb.getNumero().equals(numeroCompteInitial)) {
+                        cpb.transferer(montant, numeroCompteFinal);
+                        return true;
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.atoudeft.serveur;
 
 import com.atoudeft.banque.Banque;
 import com.atoudeft.banque.CompteBancaire;
+import com.atoudeft.banque.CompteEpargne;
 import com.atoudeft.banque.TypeCompte;
 import com.atoudeft.banque.serveur.ConnexionBanque;
 import com.atoudeft.banque.serveur.ServeurBanque;
@@ -40,9 +41,10 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
         ServeurBanque serveurBanque = (ServeurBanque)serveur;
         Banque banque;
         ConnexionBanque cnx;
-        String msg, typeEvenement, argument, numCompteClient, nip, strMontant, numFacture, description, numCompteFinal;
+        String msg, typeEvenement, argument, numCompteClient, nip, strMontant, numFacture, description, numCompteFinal, numero;
         String[] t;
         int montant;
+        boolean estEgual = true;
 
         if (source instanceof Connexion) {
             cnx = (ConnexionBanque) source;
@@ -117,7 +119,18 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     if(banque.getNumeroCompteParDefaut(cnx.getNumeroCompteClient(), TypeCompte.EPARGNE) == null){
                         cnx.envoyer("EPARGNE NO");
                     }else{
-
+                        numero = "";
+                        while(estEgual) {
+                            numero = CompteBancaire.genereNouveauNumero();
+                            for (CompteBancaire cpb : banque.getCompteClient(cnx.getNumeroCompteClient()).getComptes()) {
+                                if (!cpb.getNumero().equals(numero)) {
+                                    estEgual = false;
+                                }
+                            }
+                        }
+                        banque.getCompteClient(cnx.getNumeroCompteClient()).ajouter(
+                                new CompteEpargne(numero,TypeCompte.EPARGNE, 0.05 ));
+                        cnx.envoyer("EPARGNE OK");
                     }
 
                     break;
@@ -132,12 +145,14 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     argument = evenement.getArgument();
                     banque = serveurBanque.getBanque();
                     if (argument.equals("cheque")){
-                        cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(cnx.getNumeroCompteClient(), TypeCompte.CHEQUE));
+                        cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(
+                                cnx.getNumeroCompteClient(), TypeCompte.CHEQUE));
                         cnx.envoyer("SELECT OK");
                         break;
                     }
                     if (argument.equals("epargne")){
-                        cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(cnx.getNumeroCompteClient(), TypeCompte.EPARGNE));
+                        cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(
+                                cnx.getNumeroCompteClient(), TypeCompte.EPARGNE));
                         cnx.envoyer("SELECT OK");
                         break;
                     } else {

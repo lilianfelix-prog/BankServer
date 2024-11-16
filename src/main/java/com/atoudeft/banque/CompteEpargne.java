@@ -3,7 +3,7 @@ package com.atoudeft.banque;
 public class CompteEpargne extends CompteBancaire {
 
     final int LIMITE = 1000;
-    float tauxInteret;
+    double tauxInteret;
     final int FRAIS  = 2;
     /**
      * Crée un compte bancaire.
@@ -11,7 +11,7 @@ public class CompteEpargne extends CompteBancaire {
      * @param numero numéro du compte
      * @param type   type du compte
      */
-    public CompteEpargne(String numero, TypeCompte type,  float tauxInteret) {
+    public CompteEpargne(String numero, TypeCompte type,  double tauxInteret) {
 
         super(numero, type);
         this.tauxInteret = tauxInteret;
