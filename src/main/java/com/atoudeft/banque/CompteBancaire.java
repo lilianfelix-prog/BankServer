@@ -1,12 +1,14 @@
 package com.atoudeft.banque;
 
+import com.atoudeft.banque.serveur.PileChainee;
+
 import java.io.Serializable;
 
 public abstract class CompteBancaire implements Serializable {
     private String numero;
     private TypeCompte type;
     private double solde;
-
+    PileChainee historique;
     /**
      * Génère un numéro de compte bancaire aléatoirement avec le format CCC00C, où C est un caractère alphabétique
      * majuscule et 0 est un chiffre entre 0 et 9.
