@@ -2,15 +2,13 @@ package com.atoudeft.banque.serveur;
 
 import com.atoudeft.banque.TypeOperation;
 
-import java.util.Date;
-
 public class OperationDepot extends Operation {
 
-    String montant;
+    double montant;
 
-    public OperationDepot(TypeOperation type, Date date, String montant) {
+    public OperationDepot(TypeOperation type, double montant) {
 
-        super( type, date );
+        super( type );
         this.montant = montant;
 
     }

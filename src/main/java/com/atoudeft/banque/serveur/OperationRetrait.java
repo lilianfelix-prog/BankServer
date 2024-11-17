@@ -6,10 +6,10 @@ import java.util.Date;
 
 public class OperationRetrait extends Operation {
 
-    String montant;
+    double montant;
 
-    public OperationRetrait(TypeOperation type, Date date, String montant) {
-        super(type, date);
+    public OperationRetrait(TypeOperation type, double montant) {
+        super(type);
         this.montant = montant;
 
     }

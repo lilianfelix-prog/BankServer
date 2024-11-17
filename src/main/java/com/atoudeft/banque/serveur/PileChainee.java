@@ -37,47 +37,6 @@ public class PileChainee implements Serializable {
         }
 
         /**
-         * Retirer un élément à la fin de la liste et le retourner.
-         * @return L'objet retiré, null si la liste est vide.
-         */
-        public Object retirerFin() {
-        /* Stratégie :
-            Parcourir la liste jusqu'à la fin
-            Modifier l'avant-dernier noeud
-            Ajuster le nombre d'éléments
-            Retourner le contenu du dernier noeud
-         */
-
-            // gérer le cas où la liste est vide
-            if (nbElement == 0) {
-                return null;
-            }
-
-            // gérer le cas où il y a un seul élément
-            if (nbElement == 1) {
-                Object contenu = tete.getElement();
-                nbElement--;
-                tete = null;
-                return contenu;
-            }
-
-            // tous les autres cas
-            Noeud courant = tete;
-            Noeud precedent = tete;
-            while (courant.getSuivant() != null) {
-                precedent = courant;
-                courant = courant.getSuivant();
-            }
-
-            // courant contient une référence vers le dernier noeud
-            // precedent contient une référence vers l'avant-dernier noeud
-            precedent.setSuivant(null);
-            nbElement--;
-
-            return courant.getElement();
-        }
-
-        /**
          * Retirer un élément au début de la liste et le retourner.
          * @return L'objet retiré, null si la liste est vide.
          */

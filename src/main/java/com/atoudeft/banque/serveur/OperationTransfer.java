@@ -4,14 +4,14 @@ import com.atoudeft.banque.TypeOperation;
 
 import java.util.Date;
 
-abstract class OperationTransfer extends Operation {
+public class OperationTransfer extends Operation {
 
-    String montant;
+    double montant;
     String numCompteFinal;
 
-    public OperationTransfer(TypeOperation type, Date date, String montant, String numCompteFinal) {
+    public OperationTransfer(TypeOperation type,  double montant, String numCompteFinal) {
 
-        super(type, date);
+        super(type);
         this.montant = montant;
         this.numCompteFinal = numCompteFinal;
     }
