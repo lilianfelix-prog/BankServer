@@ -2,6 +2,8 @@ package com.atoudeft.banque.serveur;
 
 import com.atoudeft.banque.TypeOperation;
 
+import java.util.Date;
+
 public class OperationDepot extends Operation {
 
     double montant;
@@ -15,7 +17,7 @@ public class OperationDepot extends Operation {
 
     public String toString(){
 
-        return  " DATE : " +date+ " TYPE : "+type + "MONTANT : "+ montant ;
+        return  "\n OPERATION DATE : " +date+ " TYPE : "+type + "MONTANT : "+ montant ;
     }
 
 }

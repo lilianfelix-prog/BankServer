@@ -1,5 +1,10 @@
 package com.atoudeft.banque;
 
+import com.atoudeft.banque.serveur.OperationDepot;
+import com.atoudeft.banque.serveur.OperationFacture;
+import com.atoudeft.banque.serveur.OperationRetrait;
+import com.atoudeft.banque.serveur.OperationTransfer;
+
 public class CompteEpargne extends CompteBancaire {
 
     final int LIMITE = 1000;
@@ -28,6 +33,7 @@ public class CompteEpargne extends CompteBancaire {
         if (montant > 0) {
 
             setSolde(getSolde() + montant);
+            getHistorique().ajouterDebut(new OperationDepot(TypeOperation.DEPOT, montant));
             return true;
         }
 
@@ -51,7 +57,7 @@ public class CompteEpargne extends CompteBancaire {
             }
 
             setSolde(getSolde() - montant);
-
+            getHistorique().ajouterDebut(new OperationRetrait(TypeOperation.RETRAIT, montant));
             return true;
         }
 
@@ -60,12 +66,13 @@ public class CompteEpargne extends CompteBancaire {
 
     @Override
     public boolean payerFacture(String numeroFacture, double montant, String description) {
-
+        getHistorique().ajouterDebut(new OperationFacture(TypeOperation.FACTURE, montant, numeroFacture, description));
         return false;
     }
 
     @Override
     public boolean transferer(double montant, String numeroCompteDestinataire) {
+        getHistorique().ajouterDebut(new OperationTransfer(TypeOperation.TRANSFER, montant, numeroCompteDestinataire));
         return false;
     }
 

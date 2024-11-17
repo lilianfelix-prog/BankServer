@@ -237,7 +237,20 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         cnx.envoyer("TRANSFER NO");
                     }
                     break;
-
+                /******************* COMMANDES POUR TRANSFER *******************/
+                case "HIST":
+                    banque = serveurBanque.getBanque();
+                    if(cnx.getNumeroCompteActuel()==null){
+                        cnx.envoyer("HIST NO");
+                        break;
+                    }
+                    for (CompteBancaire cpb : banque.getCompteClient(cnx.getNumeroCompteClient()).getComptes()) {
+                        if(cnx.getNumeroCompteActuel().equals(cpb.getNumero())){
+                            cnx.envoyer("HIST: " + cpb.getHistorique().toString());
+                            break;
+                        }
+                    }
+                    break;
                     /******************* TRAITEMENT PAR DÉFAUT *******************/
                 default: //Renvoyer le texte recu convertit en majuscules :
                     msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();

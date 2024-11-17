@@ -16,7 +16,7 @@ public class OperationRetrait extends Operation {
 
     public String toString() {
 
-        return " DATE : " +date+ " TYPE : "+type + "MONTANT : "+ montant;
+        return "\n OPERATION DATE : " +date+ " TYPE : "+type + "MONTANT : "+ montant;
 
 
     }

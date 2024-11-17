@@ -61,7 +61,7 @@ public class CompteCheque extends CompteBancaire {
     @Override
     public boolean transferer(double montant, String numeroCompteDestinataire) {
 
-        getHistorique().ajouterDebut(new OperationTransfer(TypeOperation.FACTURE, montant, numeroCompteDestinataire));
+        getHistorique().ajouterDebut(new OperationTransfer(TypeOperation.TRANSFER, montant, numeroCompteDestinataire));
 
         return false;
     }

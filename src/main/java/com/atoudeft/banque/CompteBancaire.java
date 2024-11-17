@@ -35,7 +35,7 @@ public abstract class CompteBancaire implements Serializable {
         this.numero = numero;
         this.type = type;
         this.solde = 0;
-        this.historique =new PileChainee();
+        this.historique = new PileChainee();
     }
     public String getNumero() {
         return numero;
