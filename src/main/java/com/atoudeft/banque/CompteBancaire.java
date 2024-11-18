@@ -8,7 +8,7 @@ public abstract class CompteBancaire implements Serializable {
     private String numero;
     private TypeCompte type;
     private double solde;
-    private PileChainee historique;
+    private PileChainee historique; // attribut de Type Pilechaine qui pour stocker les opérations
     /**
      * Génère un numéro de compte bancaire aléatoirement avec le format CCC00C, où C est un caractère alphabétique
      * majuscule et 0 est un chiffre entre 0 et 9.
@@ -46,7 +46,7 @@ public abstract class CompteBancaire implements Serializable {
     public double getSolde() {
         return solde;
     }
-    public PileChainee getHistorique() {return historique;}
+    public PileChainee getHistorique() {return historique;} // Accesseur pour l'attribut  PileChainee historique
 
     public void setSolde(double solde){
         this.solde = solde;

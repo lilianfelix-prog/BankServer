@@ -2,6 +2,11 @@ package com.atoudeft.banque.serveur;
 
 import java.io.Serializable;
 
+/**Credit: Simon Pichette
+ * Cette classe implémente le noeud d'une liste chainée
+ *
+ * Le type de l'élément est abstrait en utilisant la classe Object
+ */
 public class Noeud implements Serializable {
 
     private final Object element;

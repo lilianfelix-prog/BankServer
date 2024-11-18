@@ -51,6 +51,14 @@ public class CompteCheque extends CompteBancaire {
         return false;
     }
 
+
+    /**Cette méthode permet d'ajouter les transactions de facture
+     *
+     * @param numeroFacture
+     * @param montant
+     * @param description
+     * @return
+     */
     @Override
     public boolean payerFacture(String numeroFacture, double montant, String description) {
 
@@ -58,6 +66,12 @@ public class CompteCheque extends CompteBancaire {
         return false;
     }
 
+    /** Cette méthode permet d'ajouter les transactions de transfert
+     *
+     * @param montant
+     * @param numeroCompteDestinataire
+     * @return
+     */
     @Override
     public boolean transferer(double montant, String numeroCompteDestinataire) {
 

@@ -4,7 +4,14 @@ import java.io.Serializable;
 
 public class PileChainee implements Serializable {
 
-        private Noeud tete = null;
+    /** Credit : Simon Pichette
+     *  Cette classe implémente une liste chaînée
+     *
+     *  Le type de l'élément est abstrait en utilisant la classe Objet
+     *
+     *  Cette classe dépend de la classe Noeud
+     */
+    private Noeud tete = null;
         private int nbElement = 0;
 
         // Constructeur par défaut
@@ -58,7 +65,11 @@ public class PileChainee implements Serializable {
             return contenu;
         }
 
-        public String toString() {
+    /** Cette méthode  retourne une chaîne de caractère représentant les éléments d'une liste chaînée avec leurs indices
+     *
+     * @return
+     */
+    public String toString() {
             if (nbElement == 0) {
                 return "Liste vide\n";
             }
