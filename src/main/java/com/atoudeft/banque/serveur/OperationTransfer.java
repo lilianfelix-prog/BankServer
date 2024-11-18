@@ -31,7 +31,7 @@ public class OperationTransfer extends Operation {
      */
     public String toString () {
 
-        return "\n OPERATION DATE : " +date+ " TYPE : "+type + "MONTANT : "+ montant+ "NUMÉRO COMPTE DESTINATAIRE: "+ numCompteFinal ;
+        return "\n OPERATION DATE : " +date+ " TYPE : "+type + " MONTANT : "+ montant+ " NUMÉRO COMPTE DESTINATAIRE: "+ numCompteFinal ;
 
 
     }

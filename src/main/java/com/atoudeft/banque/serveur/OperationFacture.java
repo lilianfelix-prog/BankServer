@@ -35,7 +35,7 @@ public class OperationFacture extends Operation{
      */
     public String toString() {
 
-        return "\n OPERATION DATE : " +date+ " TYPE : "+type + "MONTANT : "+ montant+" NUMÉRO DE FACTURE : "+ numFacture + " DESCRIPTION: "+ description;
+        return "\n OPERATION DATE : " +date+ " TYPE : "+type + " MONTANT : "+ montant+" NUMÉRO DE FACTURE : "+ numFacture + " DESCRIPTION: "+ description;
 
 
 

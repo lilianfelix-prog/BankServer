@@ -15,9 +15,10 @@ public abstract class Operation implements Serializable {
     TypeOperation type;
 
     /**
-     *  Constructeur qui contient type et date
-      */
-
+     *  Constructeur qui prend en parametre le type d'operation
+     *  et initialise la date en utilisant l'heure du systeme
+     *
+     **/
 
     public Operation(TypeOperation type ) {
 
