@@ -24,7 +24,7 @@ public class OperationDepot extends Operation {
 
     }
 
-    /**
+    /** Cette méthode retourne la transaction du dépôt qui inclut la date, le type d'opération et le montant
      *
      * @return une chaîne de caractère: DATE, TYPE et MONTANT
      */

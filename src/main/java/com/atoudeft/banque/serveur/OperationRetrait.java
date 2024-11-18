@@ -20,7 +20,7 @@ public class OperationRetrait extends Operation {
 
     }
 
-    /** Cette méthode retourne un chaîne de caractère
+    /** Cette méthode retourne un transaction d'un retrait qui inclut la date, le type d'opération et le montant
      *
      * @return un chaine de caractère: DATE, TYPE et MONTANT
      */

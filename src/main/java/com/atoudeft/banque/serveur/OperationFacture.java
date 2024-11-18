@@ -29,7 +29,7 @@ public class OperationFacture extends Operation{
     }
 
 
-    /**
+    /** Cette méthode retourne la transaction de la facture qui inclut la date, le type d'opération, le montant et le numéro de la facture
      *
      * @return un chaîne de caractère : DATE, MONTANT, NUMÉRO DE FACTURE ET DESCRIPTION
      */

@@ -25,7 +25,7 @@ public class OperationTransfer extends Operation {
         this.numCompteFinal = numCompteFinal;
     }
 
-    /** Cette méthode retourne un chaîne de
+    /** Cette méthode retourne la transaction d'un transfert qui inclut la date, le type d'opération, le montant et le numéro du compte du destinataire
      *
      * @return une chaine de caractère : DATE, MONTANT et NUMÉROCOMPTEDESTINATAIRE
      */
