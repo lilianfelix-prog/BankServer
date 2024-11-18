@@ -12,6 +12,7 @@ public class Banque implements Serializable {
     private String nom;
     private List<CompteClient> comptes;
 
+
     public Banque(String nom) {
         this.nom = nom;
         this.comptes = new ArrayList<>();
@@ -24,12 +25,23 @@ public class Banque implements Serializable {
      * @return le compte-client s'il a été trouvé. Sinon, retourne null
      */
     public CompteClient getCompteClient(String numeroCompteClient) {
+        // parcours la list des comptes clients et retourne celui qui correspond
+        for (CompteClient client : comptes) {
+                if (client.getNumero().equals(numeroCompteClient)) {
+                    return client;
+                }
+            }
+
+        return null;
+        //erreur avec le code original, probleme non resolu
+        /*
         CompteClient cpt = new CompteClient(numeroCompteClient,"");
         int index = this.comptes.indexOf(cpt);
         if (index != -1)
             return this.comptes.get(index);
         else
             return null;
+        */
     }
 
     /**
@@ -56,6 +68,7 @@ public class Banque implements Serializable {
      * @return true si le dépot s'est effectué correctement
      */
     public boolean deposer(double montant, String numeroCompte) {
+        // parcourir les comptes banquaires dans chaque compte client pour determiner quel compte crediter
         for(CompteClient cpt: comptes){
             for(CompteBancaire cpb: cpt.getComptes()){
                 if(cpb.getNumero().equals(numeroCompte)){
@@ -75,6 +88,7 @@ public class Banque implements Serializable {
      * @return true si le retrait s'est effectué correctement
      */
     public boolean retirer(double montant, String numeroCompte) {
+        // parcourir les comptes banquaires dans chaque compte client pour determiner quel compte debiter
         for(CompteClient cpt: comptes){
             for(CompteBancaire cpb: cpt.getComptes()){
                 if(cpb.getNumero().equals(numeroCompte)){
@@ -124,6 +138,7 @@ public class Banque implements Serializable {
      * @return true si le paiement s'est bien effectuée
      */
     public boolean payerFacture(double montant, String numeroCompte, String numeroFacture, String description) {
+        // parcourir les comptes banquaires dans chaque compte client pour determiner quel compte debiter la facture
         for(CompteClient cpt: comptes){
             for(CompteBancaire cpb: cpt.getComptes()){
                 if(cpb.getNumero().equals(numeroCompte)){
@@ -178,6 +193,7 @@ public class Banque implements Serializable {
         // Ajoute le CompteCheque au CompteClient
         client.ajouter(cheque);
         // Ajoute le CompteClient à la liste des comptes de la banque
+
         this.comptes.add(client);
         return true;
     }

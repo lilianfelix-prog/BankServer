@@ -1,9 +1,6 @@
 package com.atoudeft.serveur;
 
-import com.atoudeft.banque.Banque;
-import com.atoudeft.banque.CompteBancaire;
-import com.atoudeft.banque.CompteEpargne;
-import com.atoudeft.banque.TypeCompte;
+import com.atoudeft.banque.*;
 import com.atoudeft.banque.serveur.ConnexionBanque;
 import com.atoudeft.banque.serveur.ServeurBanque;
 import com.atoudeft.commun.evenement.Evenement;
@@ -78,7 +75,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         banque = serveurBanque.getBanque();
                         if (banque.ajouter(numCompteClient,nip)) {
                             cnx.setNumeroCompteClient(numCompteClient);
-                            //cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(numCompteClient));
+                            cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(numCompteClient, TypeCompte.CHEQUE));
                             cnx.envoyer("NOUVEAU OK " + t[0] + " cree");
                         }
                         else
@@ -95,9 +92,10 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
 
                     // Vérification que le compte n'est pas déjà utilisé par une autre connexion
                     if(serveurBanque.list().contains(numCompteClient)){
-                        cnx.envoyer("CONNECT NO");
+                        cnx.envoyer("CONNECT NO" );
                         break;
                     }
+
                     banque = serveurBanque.getBanque();
                     // Vérification que le compte existe et que le NIP est correct
                     if(banque.getCompteClient(numCompteClient).getNip().equals(nip)){
@@ -110,31 +108,43 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     break;
                 /******************* COMMANDES EPARGNE *******************/
                 case "EPARGNE":
+                    //verifie si le client est connecte
                     if (cnx.getNumeroCompteClient()==null) {
                         cnx.envoyer("EPARGNE NO");
                         break;
                     }
                     banque = serveurBanque.getBanque();
                     //Aller dans le array des comptes bancaire client et verifier qu'il n'y a pas de compte epargne
-                    if(banque.getNumeroCompteParDefaut(cnx.getNumeroCompteClient(), TypeCompte.EPARGNE) == null){
+                    if(banque.getNumeroCompteParDefaut(cnx.getNumeroCompteClient(), TypeCompte.EPARGNE) != null){
                         cnx.envoyer("EPARGNE NO");
+                        break;
                     }else{
                         numero = "";
+
+                        // generer un numero pour le compte epargne
                         while(estEgual) {
                             numero = CompteBancaire.genereNouveauNumero();
-                            for (CompteBancaire cpb : banque.getCompteClient(cnx.getNumeroCompteClient()).getComptes()) {
-                                if (!cpb.getNumero().equals(numero)) {
-                                    estEgual = false;
+
+                            // tant que le nouveau numero genere est pareil que le numero d'un compte existant, generer un autre numero
+                            if(banque.getCompteClient(cnx.getNumeroCompteClient()).getComptes() != null) {
+                                for (CompteBancaire cpb : banque.getCompteClient(cnx.getNumeroCompteClient()).getComptes()) {
+                                    if (!cpb.getNumero().equals(numero)) {
+                                        estEgual = false;
+                                        break;
+                                    }
                                 }
+                            }else{
+                                estEgual = false;
                             }
                         }
+                        // ajouter un compte epargne a partir d'un objet CompteEpargne au compte client
                         banque.getCompteClient(cnx.getNumeroCompteClient()).ajouter(
                                 new CompteEpargne(numero,TypeCompte.EPARGNE, 0.05 ));
                         cnx.envoyer("EPARGNE OK");
                     }
 
                     break;
-                    
+
                 /******************* COMMANDES DE SELECTION *******************/
                 case "SELECT":
                     // vérifiez que le client est bien connecté à son compte-client
@@ -142,6 +152,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         cnx.envoyer("SELECT NO");
                         break;
                     }
+                    //prend l'argument de la commande pour determiner quelle compte utiliser
                     argument = evenement.getArgument();
                     banque = serveurBanque.getBanque();
                     if (argument.equals("cheque")){
@@ -160,17 +171,17 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     }
                     break;
                 /******************* COMMANDES POUR CREDITER COMPTE *******************/
-                case "DEPOT":
+                case "DEPOT": // commande qui permet au client de crediter son compte
                     argument = evenement.getArgument();
                     montant = 0;
                     try {
-                        montant = Integer.parseInt(argument);
+                        montant = Integer.parseInt(argument); // convertir l'argument de la commande (String) en int
                     }
                     catch (NumberFormatException e) {
-                        cnx.envoyer("DEPOT NO NumberFormatException");
+                        cnx.envoyer("DEPOT NO"); // gerer l'exception ou il n'y a pas que des chiffres dans l'argument
                     }
                     banque = serveurBanque.getBanque();
-                    if(banque.deposer(montant, cnx.getNumeroCompteActuel())){
+                    if(banque.deposer(montant, cnx.getNumeroCompteActuel())){ // fait l'operation deposer puis return true
                         cnx.envoyer("DEPOT OK");
                     }else{
                         cnx.envoyer("DEPOT NO");
@@ -178,17 +189,17 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     break;
 
                 /******************* COMMANDES POUR DEBITER COMPTE *******************/
-                case "RETRAIT":
+                case "RETRAIT": // commande qui permet au client de debiter son compte
                     argument = evenement.getArgument();
                     montant = 0;
                     try {
-                        montant = Integer.parseInt(argument);
+                        montant = Integer.parseInt(argument); // convertir l'argument de la commande (String) en int
                     }
                     catch (NumberFormatException e) {
-                        cnx.envoyer("RETRAIT NO NumberFormatException");
+                        cnx.envoyer("RETRAIT NO"); // gerer l'exception ou il n'y a pas que des chiffres dans l'argument
                     }
                     banque = serveurBanque.getBanque();
-                    if(banque.retirer(montant, cnx.getNumeroCompteActuel())){
+                    if(banque.retirer(montant, cnx.getNumeroCompteActuel())){ // fait l'operation retirer puis return true
                         cnx.envoyer("RETRAIT OK");
                     }else{
                         cnx.envoyer("RETRAIT NO");
@@ -196,21 +207,21 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     break;
 
                 /******************* COMMANDES POUR PAYER FACTURE *******************/
-                case "FACTURE":
+                case "FACTURE": // commande qui permet au client de payer ses facture
                     argument = evenement.getArgument();
-                    t = argument.split(" ");
+                    t = argument.split(" "); // separe l'argument de la commande en trois parties
                     strMontant = t[0];
                     numFacture = t[1];
                     description = t[2];
                     montant = 0;
                     try {
-                        montant = Integer.parseInt(strMontant);
+                        montant = Integer.parseInt(strMontant); // convertir l'argument de la commande (String) en int
                     }
                     catch (NumberFormatException e) {
-                        cnx.envoyer("FACTURE NO NumberFormatException");
+                        cnx.envoyer("FACTURE NO NumberFormatException"); // gerer l'exception ou il n'y a pas que des chiffres dans l'argument
                     }
                     banque = serveurBanque.getBanque();
-                    if(banque.payerFacture(montant, cnx.getNumeroCompteActuel(), numFacture, description)){
+                    if(banque.payerFacture(montant, cnx.getNumeroCompteActuel(), numFacture, description)){ // fait l'operation payerFacture puis return true
                         cnx.envoyer("FACTURE OK");
                     }else{
                         cnx.envoyer("FACTURE NO");
@@ -218,34 +229,37 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     break;
 
                 /******************* COMMANDES POUR TRANSFER *******************/
-                case "TRANSFER":
+                case "TRANSFER": //commande qui permet au client de faire un transfer entre deux comptes
                     argument = evenement.getArgument();
-                    t = argument.split(" ");
+                    t = argument.split(" "); // separe l'argument de la commande en deux parties
                     strMontant = t[0];
                     numCompteFinal = t[1];
                     montant = 0;
                     try {
-                        montant = Integer.parseInt(strMontant);
+                        montant = Integer.parseInt(strMontant); // convertir l'argument de la commande (String) en int
                     }
                     catch (NumberFormatException e) {
-                        cnx.envoyer("TRANSFER NO NumberFormatException");
+                        cnx.envoyer("TRANSFER NO NumberFormatException"); // gerer l'exception ou il n'y a pas que des chiffres dans l'argument
                     }
                     banque = serveurBanque.getBanque();
-                    if(banque.transferer(montant, cnx.getNumeroCompteActuel(), numCompteFinal)){
+                    if(banque.transferer(montant, cnx.getNumeroCompteActuel(), numCompteFinal)){ // fait l'operation transferer puis return true
                         cnx.envoyer("TRANSFER OK");
                     }else{
                         cnx.envoyer("TRANSFER NO");
                     }
                     break;
                 /******************* COMMANDES POUR TRANSFER *******************/
-                case "HIST":
+                case "HIST": //commande qui permet de voir l'historique des operations effectuees dans le compte
                     banque = serveurBanque.getBanque();
+                    //verifie si un compte est bien selectione
                     if(cnx.getNumeroCompteActuel()==null){
                         cnx.envoyer("HIST NO");
                         break;
                     }
+                    // parcoure la list des comptes du client pour trouver le compte actuelement selectionne
                     for (CompteBancaire cpb : banque.getCompteClient(cnx.getNumeroCompteClient()).getComptes()) {
                         if(cnx.getNumeroCompteActuel().equals(cpb.getNumero())){
+                            // affiche l'historique des operations du compte selectionne garde dans la pile
                             cnx.envoyer("HIST: " + cpb.getHistorique().toString());
                             break;
                         }

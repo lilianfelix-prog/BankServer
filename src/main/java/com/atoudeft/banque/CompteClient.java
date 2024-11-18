@@ -41,4 +41,6 @@ public class CompteClient implements Serializable {
         return numero;
     }
     public String getNip() { return nip; }
+
+
 }
